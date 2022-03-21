@@ -72,23 +72,7 @@
     }
     
     function upload(file){
-        var apigClient = apigClientFactory.newClient({
-            apiKey: 'Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu'
-        });
         const labels = document.getElementById("labelbox").value; //"tree, bird"
-        var params = {
-            f: file.name,
-            'x-amz-meta-customLabels': labels
-        }
-        var additionalParams = {
-            headers: {
-                'Content-Type': file.type
-            }
-        }
-        var body = getBase64(file);
-        // apigClient.uploadPut(params, body, additionalParams).then(function(result){
-        //     console.log('success OK');
-        // });
 
         var myHeaders = new Headers();
         myHeaders.append("x-api-key", "Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu");
