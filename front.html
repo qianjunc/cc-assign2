@@ -41,7 +41,7 @@
             console.log(files.type)
             console.log(files.name)
             
-    
+            upload(files);
         });
 
         // after clcik the search button, show the search result
@@ -55,7 +55,34 @@
         
         });
     });
+
+    function getBase64(file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            console.log(reader.result);
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    }
     
+    function upload(file){
+        var apigClient = apigClientFactory.newClient({
+            apiKey: 'Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu'
+        });
+        const labels = document.getElementById("labelbox").value; //"tree, bird"
+        var params = {
+            f: file.name,
+            'x-amz-meta-customLabels': labels
+        }
+        var additionalParams = {
+        }
+        var body = getBase64(file);
+        apigClient.uploadPut(params, body, additionalParams).then(function(result){
+            console.log('success OK');
+        });
+    };
 
     function search(){
         var searchTerm = document.getElementById("inputbox").value;
@@ -70,15 +97,13 @@
         };
 
         var additionalParams = {
-            // Header: {
-            // }
         };
 
         console.log(searchTerm);
         apigClient.searchGet(params, body, additionalParams).then(function(result){
-        console.log('success OK');
-        showImages(result.data.results);}).catch( function(result){
-            console.log(result);
+            console.log('success OK');
+            showImages(result.data.results);}).catch( function(result){
+                console.log(result);
         });
     }
         
