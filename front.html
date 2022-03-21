@@ -57,14 +57,18 @@
     });
 
     function getBase64(file) {
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = function () {
-            console.log(reader.result);
-        };
-        reader.onerror = function (error) {
-            console.log('Error: ', error);
-        };
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+            let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
+            if ((encoded.length % 4) > 0) {
+                encoded += '='.repeat(4 - (encoded.length % 4));
+            }
+            resolve(encoded);
+            };
+            reader.onerror = error => reject(error);
+        });
     }
     
     function upload(file){
@@ -77,11 +81,31 @@
             'x-amz-meta-customLabels': labels
         }
         var additionalParams = {
+            headers: {
+                'Content-Type': file.type
+            }
         }
         var body = getBase64(file);
-        apigClient.uploadPut(params, body, additionalParams).then(function(result){
-            console.log('success OK');
-        });
+        // apigClient.uploadPut(params, body, additionalParams).then(function(result){
+        //     console.log('success OK');
+        // });
+
+        var myHeaders = new Headers();
+        myHeaders.append("x-api-key", "Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu");
+        myHeaders.append("x-amz-meta-customLabels", labels);
+        myHeaders.append("Content-Type", file.type);
+
+        var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: file,
+        redirect: 'follow'
+        };
+
+        fetch("https://ohocsdryx3.execute-api.us-east-1.amazonaws.com/prod/upload?f="+file.name, requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
     };
 
     function search(){
