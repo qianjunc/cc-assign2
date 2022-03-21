@@ -7,65 +7,80 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
     <script src=https://code.jquery.com/jquery-3.3.1.min.js crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-
- 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="lib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+    
 
     <script type="text/javascript">
-
+    
     //preview imag
     function preview() {
         frame.src=URL.createObjectURL(event.target.files[0]);
     }
-    
+        
     // upload photos
     $(document).ready(function(){
     
         $("#upload").click(function(){
-    
-            var files = $('#file')[0].files[0];
+            console.log("uploading!")
+            const image_input = document.getElementById("image_input");
+            var files = image_input.files[0];
   
             console.log(files)
             console.log(files.type)
             console.log(files.name)
-    
-            axios.put(url,files,config).then(response=>{
-                    
-                alert("Upload successful!!");
-            })
-    
+            
     
         });
-     });
-    
-    
-    
-    
-    // after clcik the search button, show the search result
-    $('#search').click(function(){
-        query = $('#searchin').val();
-        params = {q: query};
-        apigClient.searchGet(params, {}, {})
-            .then(function(result){
-            //This is where you would put a success callback
-            console.log(result);
-            
-            let img_list = result.data
-            for (var i = 0; i < img_list.length; i++) {
-                img_url = img_list[i];
-                new_img = document.createElement('img');
-                new_img.src = img_url;
-                document.body.appendChild(new_img);
-            }
-                
-            }).catch(function(result){
-            //This is where you would put an error callback
-            console.log(result);
-            });
-    
+
+        // after clcik the search button, show the search result
+        $('#search').click(function(){
+            console.log("searching!");
+            const query = document.getElementById("inputbox");
+            params = {q: query.value};
+            console.log(query.value);
+
+            search();
+        
+        });
     });
+    
+
+    function search(){
+        var searchTerm = document.getElementById("inputbox").value;
+        var apigClient = apigClientFactory.newClient({
+            apiKey: 'Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu'
+        });
+        var params = {
+            q: searchTerm
+        };
+        var body = {
+            
+        };
+
+        var additionalParams = {
+            // Header: {
+            // }
+        };
+
+        console.log(searchTerm);
+        apigClient.searchGet(params, body, additionalParams).then(function(result){
+        console.log('success OK');
+        showImages(result.data.results);}).catch( function(result){
+            console.log(result);
+        });
+    }
         
     </script>
 
@@ -128,7 +143,7 @@
     <div class="container">
         <form method="post" action="" enctype="multipart/form-data" id="myform">
             <input type="text" id="labelbox" placeholder="Custom Labels..."/>  <br>
-            <input type="file" onchange="preview()">
+            <input type="file" onchange="preview()" id="image_input" accept="image/jpg, image/png">
             <input type="button" class="button" value="Upload" id="upload"> <br>
             <img id="frame" class = "p1" src="" width="150px" height="150px"/>   
         </form>
