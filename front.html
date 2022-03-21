@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html leng="en">
+
+    
+<head>
+    <title>Homework Assignment Photo Album</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src=https://code.jquery.com/jquery-3.3.1.min.js crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+ 
+
+    <script type="text/javascript">
+
+    //preview imag
+    function preview() {
+        frame.src=URL.createObjectURL(event.target.files[0]);
+    }
+    
+    // upload photos
+    $(document).ready(function(){
+    
+        $("#upload").click(function(){
+    
+            var files = $('#file')[0].files[0];
+  
+            console.log(files)
+            console.log(files.type)
+            console.log(files.name)
+    
+            axios.put(url,files,config).then(response=>{
+                    
+                alert("Upload successful!!");
+            })
+    
+    
+        });
+     });
+    
+    
+    
+    
+    // after clcik the search button, show the search result
+    $('#search').click(function(){
+        query = $('#searchin').val();
+        params = {q: query};
+        apigClient.searchGet(params, {}, {})
+            .then(function(result){
+            //This is where you would put a success callback
+            console.log(result);
+            
+            let img_list = result.data
+            for (var i = 0; i < img_list.length; i++) {
+                img_url = img_list[i];
+                new_img = document.createElement('img');
+                new_img.src = img_url;
+                document.body.appendChild(new_img);
+            }
+                
+            }).catch(function(result){
+            //This is where you would put an error callback
+            console.log(result);
+            });
+    
+    });
+        
+    </script>
+
+
+    <style>
+    #top{
+        font-size: 24px;
+        font-weight: bold;
+        color: red;
+        margin-left: 10pt;
+    }
+
+    #search-top{
+        margin-top: 35px;
+        margin-left: 30px;
+        font-size: 20px;
+    }
+
+    #inputbox{
+        float: left;
+        width: 30%; 
+        height: 30px;
+    }
+
+    #search{
+        float: left;
+        margin-left: 10px;
+    }
+
+    .preview{
+        width: 100px;
+        height: 100px;
+        border: 1px solid black;
+        margin: 0 auto;
+        background: white;
+    }
+
+    .container{
+        margin-top: 15px;
+    }
+
+    .p1{
+        margin-top: 5px;
+    }
+
+
+</style>
+
+<body>
+    <div id = "top">
+        Welcome to Really Super Awesome Photo Album !
+    </div>
+    <div id="search-top"> 
+        <div id="container1"> 
+            <input type="text" id="inputbox" placeholder="Search..."/> 
+            <button id="search" class="btn btn-primary" type="button">Search</button> <br>
+        </div>      
+    </div>
+
+    <div class="container">
+        <form method="post" action="" enctype="multipart/form-data" id="myform">
+            <input type="text" id="labelbox" placeholder="Custom Labels..."/>  <br>
+            <input type="file" onchange="preview()">
+            <input type="button" class="button" value="Upload" id="upload"> <br>
+            <img id="frame" class = "p1" src="" width="150px" height="150px"/>   
+        </form>
+    </div>
+
+
+
+</body>
