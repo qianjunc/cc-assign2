@@ -165,7 +165,15 @@
         .then(function(result){
             console.log('success OK');
             console.log(result)
-            showImages(result.data);})
+            var photos = result.data.body.results;
+            var container = document.getElementById("photos");
+
+            for (var i=0, len = photos.length; i < len; ++i) {
+                var img = new Image();
+                img.src = photos[i].url;
+                container.appendChild(img);
+            }
+        })
         .catch( function(result){
                 console.log("cur")
                 console.log(result.data);})
