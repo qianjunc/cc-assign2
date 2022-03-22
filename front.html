@@ -118,10 +118,18 @@
         apigClient.searchGet(params, body, additionalParams)
         .then(function(result){
             console.log('success OK');
-            console.log(result)
-            showImages(result.data);})
+            console.log(result.data.body.results);
+            var photos = result.data.body.results;
+            var container = document.getElementById("photos");
+
+            for (var i=0, len = photos.length; i < len; ++i) {
+                var img = new Image();
+                img.src = photos[i].url;
+                container.appendChild(img);
+            }
+        })
         .catch( function(result){
-                console.log("cur2")
+                console.log("cur2");
                 console.log(result);
         });
     }
@@ -266,6 +274,14 @@
             <input type="button" class="button" value="Upload" id="upload"> <br>
             <img id="frame" class = "p1" src="" width="150px" height="150px"/>   
         </form>
+    </div>
+    <div>
+        <table width="100%" style="height: 100%;" >
+            <tr>
+                <td><p id="photos" ></td>
+                <td><p id="contacts" ></td>
+            </tr>
+          </table>
     </div>
 
     <div id="div"></div>
