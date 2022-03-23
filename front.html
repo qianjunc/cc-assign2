@@ -65,21 +65,6 @@
         
         });
     });
-
-    function getBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-            let encoded = reader.result.toString().replace(/^data:(.*,)?/, '');
-            if ((encoded.length % 4) > 0) {
-                encoded += '='.repeat(4 - (encoded.length % 4));
-            }
-            resolve(encoded);
-            };
-            reader.onerror = error => reject(error);
-        });
-    }
     
     function upload(file){
         const labels = document.getElementById("labelbox").value; //"tree, bird"
@@ -154,6 +139,8 @@
             // ]
             //Could not read source map for file:///Users/handongbing/Desktop/cc-assign2-main/lib/axios/dist/axios.standalone.js: ENOENT: no such file or directory, open '/Users/handongbing/Desktop/cc-assign2-main/lib/axios/dist/axios.map'
         
+        document.getElementById('inputbox').value = speechToText;
+
         var apigClient = apigClientFactory.newClient({
             apiKey: 'Br7Lmz4KYh6BFw4yQehZ39custS21raz9XF2UDhu'
         });
@@ -188,37 +175,6 @@
                 console.log("cur")
                 console.log(result.data);})
 
-    }
-
-    function showImages(data){
-        console.log("check show image")
-        console.log("check data")
-        console.log(data)
-        var newDiv = document.getElementById("div");
-        while(newDiv.firstChild){
-            newDiv.removeChild(newDiv.firstChild);
-        }
-        
-        if(data.length==0){
-            var newContent = document.createTextNode("No image to display");
-            newDiv.appendChild(newContent);
-            var currentDiv = document.getElementById("div1"); 
-            document.body.insertBefore(newDiv, currentDiv);
-        }else{
-	        for (var i = 0; i < data.length; i++) {
-	            console.log(data[i]);
-	            var newDiv = document.getElementById("div");
-	            newDiv.style.display = 'inline'
-	            var newContent = document.createElement("img");
-	            newContent.src = data[i];
-	            newContent.style.padding = "15px";
-	            newContent.style.height = "100px";
-	            newContent.style.width = "100px";
-	            newDiv.appendChild(newContent);
-	            var currentDiv = document.getElementById("div1"); 
-	            document.body.insertBefore(newDiv, currentDiv);
-	        }
-        }
     }
 
 
