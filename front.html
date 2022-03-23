@@ -38,6 +38,7 @@
     
         $("#upload").click(function(){
             console.log("uploading!")
+            // document.getElementById('frame').innerHTML ="";
             const image_input = document.getElementById("image_input");
             var files = image_input.files[0];
   
@@ -45,12 +46,17 @@
             console.log(files.type)
             console.log(files.name)
             
+            document.getElementById('frame').value = ""
+            document.getElementById('image_input').src = "#";
             upload(files);
+           
         });
 
         // after clcik the search button, show the search result
         $('#search').click(function(){
+
             console.log("searching!");
+            document.getElementById('container').innerHTML ="";
             const query = document.getElementById("inputbox");
             params = {q: query.value};
             console.log(query.value);
@@ -115,26 +121,27 @@
         };
 
         console.log(searchTerm);
-        apigClient.searchGet(params, body, additionalParams)
-        .then(function(result){
+        apigClient.searchGet(params, body, additionalParams).then(function(result){
             console.log('success OK');
             console.log(result.data.body.results);
             var photos = result.data.body.results;
             var container = document.getElementById("photos");
 
             for (var i=0, len = photos.length; i < len; ++i) {
-                var img = new Image();
+                var img = new Image(200,200);
                 img.src = photos[i].url;
-                container.appendChild(img);
+                img.style.padding = "15px";
+
+                document.getElementById('container').appendChild(img);
             }
-        })
-        .catch( function(result){
+        }).catch( function(result){
                 console.log("cur2");
                 console.log(result);
         });
     }
 
     function searchFromVoice(){
+        document.getElementById('container').innerHTML ="";
         console.log("speak search start")
         recognition.start()
         recognition.onresult = (event) => {
@@ -169,9 +176,12 @@
             var container = document.getElementById("photos");
 
             for (var i=0, len = photos.length; i < len; ++i) {
-                var img = new Image();
+                var img = new Image(200, 200);
+                // img.src = photos[i].url;
+                // container.appendChild(img);
                 img.src = photos[i].url;
-                container.appendChild(img);
+                img.style.padding = "15px";
+                document.getElementById('container').appendChild(img);
             }
         })
         .catch( function(result){
@@ -201,9 +211,9 @@
 	            newDiv.style.display = 'inline'
 	            var newContent = document.createElement("img");
 	            newContent.src = data[i];
-	            newContent.style.padding = "20px";
-	            newContent.style.height = "200px";
-	            newContent.style.width = "200px";
+	            newContent.style.padding = "15px";
+	            newContent.style.height = "100px";
+	            newContent.style.width = "100px";
 	            newDiv.appendChild(newContent);
 	            var currentDiv = document.getElementById("div1"); 
 	            document.body.insertBefore(newDiv, currentDiv);
@@ -258,6 +268,10 @@
         margin-top: 5px;
     }
 
+    .l1{
+        margin-top: 10px;
+    }
+
 
 </style>
 
@@ -291,9 +305,10 @@
             </tr>
           </table>
     </div>
-
-    <div id="div"></div>
-    <div id="div1"></div>
+    <br>
+    <div id="div" class = "l1"></div>
+    <div id="div1" class = "l1"></div>
+    <div id="container"></div>
 
 
 </body>
